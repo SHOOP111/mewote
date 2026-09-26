@@ -63,7 +63,7 @@ def _compile_pattern(value: Any, where: str) -> Pattern:
     if any("*" in s and s not in {"*", "**"} for s in segments):
         raise PolicyError(f"{where}: wildcard must occupy an entire segment ('*' or '**')")
     if "**" in segments[:-1]:
-        raise PolicyError(f"{where}: '**' is allowed only as the final segment")
+        raise PolicyError(f"{where}: multi-segment wildcard '**' is allowed only as the final segment")
     if segments.count("**") > 1:
         raise PolicyError(f"{where}: only one trailing '**' is allowed")
     literals = sum(s not in {"*", "**"} for s in segments)
