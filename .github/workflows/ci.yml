@@ -35,6 +35,61 @@ jobs:
       - name: Run reproducible smoke benchmarks
         if: success()
         run: java -jar target/lattice-0.1.0-SNAPSHOT-all.jar bench --output target/benchmark.json > target/benchmark.console.txt
+      - name: Publish test, branch-coverage, and benchmark summary
+        if: success()
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          reports = list(Path("target/surefire-reports").glob("TEST-*.xml"))
+          totals = {key: 0 for key in ("tests", "failures", "errors", "skipped")}
+          for report in reports:
+              root = ET.parse(report).getroot()
+              for key in totals:
+                  totals[key] += int(root.attrib.get(key, 0))
+
+          jacoco_path = Path("target/site/jacoco/jacoco.xml")
+          overall = "unavailable"
+          warp = "unavailable"
+          if jacoco_path.exists():
+              root = ET.parse(jacoco_path).getroot()
+              branches = next((c for c in root.findall("counter") if c.attrib.get("type") == "BRANCH"), None)
+              if branches is not None:
+                  covered, missed = int(branches.attrib["covered"]), int(branches.attrib["missed"])
+                  overall = f"{covered}/{covered + missed} ({100 * covered / max(1, covered + missed):.1f}%)"
+              package = next((p for p in root.findall("package") if p.attrib.get("name") == "io/lattice/warp"), None)
+              if package is not None:
+                  branches = next((c for c in package.findall("counter") if c.attrib.get("type") == "BRANCH"), None)
+                  if branches is not None:
+                      covered, missed = int(branches.attrib["covered"]), int(branches.attrib["missed"])
+                      warp = f"{covered}/{covered + missed} ({100 * covered / max(1, covered + missed):.1f}%)"
+
+          benchmark_path = Path("target/benchmark.json")
+          benchmark = json.loads(benchmark_path.read_text()) if benchmark_path.exists() else {"measurements": []}
+          lines = [
+              "# LATTICE verification evidence",
+              "",
+              f"- JUnit: {totals['tests']} tests; {totals['failures']} failures; {totals['errors']} errors; {totals['skipped']} skipped.",
+              f"- JaCoCo branch coverage: all production packages {overall}; Warp package {warp}.",
+              "- These are measured counts, not a 100% coverage claim or security certification.",
+              "",
+              "## Smoke benchmark (shared GitHub runner; not a release benchmark)",
+              "",
+              "| Path | Median ns/op | p95 ns/op | Median ops/s |",
+              "|---|---:|---:|---:|",
+          ]
+          for item in benchmark.get("measurements", []):
+              lines.append(f"| `{item['path']}` | {item['medianNanosPerOperation']:.3f} | {item['p95NanosPerOperation']:.3f} | {item['medianOperationsPerSecond']:.3f} |")
+          lines += ["", benchmark.get("methodology", "Benchmark report unavailable."), ""]
+          output = "\n".join(lines)
+          Path("target/evidence-summary.md").write_text(output)
+          print(output)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write(output)
+          PY
       - name: Expose concise verification diagnostics
         if: failure()
         env:
@@ -62,5 +117,6 @@ jobs:
             target/surefire-reports/**
             target/benchmark.json
             target/benchmark.console.txt
+            target/evidence-summary.md
             target/site/jacoco/**
             target/site/surefire-report.html
