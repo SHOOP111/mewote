@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "id": "palette.survival",
+    "version": "1.0.0",
+    "description": "A conservative survival-server starter policy. Adapt and lint before use."
+  },
+  "roles": {
+    "guest": {
+      "inherits": [],
+      "ceiling": ["minecraft.chat.send", "minecraft.spawn.**"]
+    },
+    "member": {
+      "inherits": ["guest"],
+      "ceiling": ["minecraft.chat.**", "minecraft.spawn.**", "minecraft.build.**", "minecraft.home.**"]
+    },
+    "builder": {
+      "inherits": ["member"],
+      "ceiling": ["minecraft.chat.**", "minecraft.spawn.**", "minecraft.build.**", "minecraft.home.**"]
+    },
+    "moderator": {
+      "inherits": ["member"],
+      "ceiling": ["minecraft.chat.**", "minecraft.spawn.**", "minecraft.build.**", "minecraft.home.**", "minecraft.moderation.**"]
+    }
+  },
+  "rules": [
+    {
+      "id": "guest.chat.send",
+      "action": "minecraft.chat.send",
+      "effect": "ALLOW",
+      "band": "EXPLICIT",
+      "authority": "ROLE",
+      "role": "guest",
+      "priority": 0
+    },
+    {
+      "id": "member.build.place",
+      "action": "minecraft.build.**",
+      "effect": "ALLOW",
+      "band": "EXPLICIT",
+      "authority": "ROLE",
+      "role": "member",
+      "priority": 0,
+      "guard": { "world": ["survival"] }
+    },
+    {
+      "id": "member.home.teleport",
+      "action": "minecraft.home.teleport",
+      "effect": "ALLOW",
+      "band": "EXPLICIT",
+      "authority": "ROLE",
+      "role": "member",
+      "priority": 0,
+      "budget": { "capacity": 3, "refillTokens": 3, "refillPeriodSeconds": 60 }
+    },
+    {
+      "id": "spawn.build.barrier",
+      "action": "minecraft.build.**",
+      "effect": "BARRIER",
+      "band": "BARRIER",
+      "authority": "SPATIAL",
+      "priority": 0,
+      "guard": { "region": ["spawn"] }
+    },
+    {
+      "id": "moderator.moderation.inspect",
+      "action": "minecraft.moderation.**",
+      "effect": "ALLOW",
+      "band": "EXPLICIT",
+      "authority": "ROLE",
+      "role": "moderator",
+      "priority": 5
+    }
+  ]
+}

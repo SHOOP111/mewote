@@ -1,0 +1,37 @@
+name: LATTICE evidence
+
+on:
+  push:
+    branches: [main, 'arena/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Compile, laws, corpus, and coverage report
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Compile and run the complete verification suite
+        run: mvn --batch-mode --no-transfer-progress clean verify
+      - name: Publish test and branch coverage evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lattice-evidence-${{ github.sha }}
+          if-no-files-found: warn
+          path: |
+            target/surefire-reports/**
+            target/site/jacoco/**
+            target/site/surefire-report.html

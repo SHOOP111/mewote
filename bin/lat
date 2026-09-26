@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+set -eu
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+JAR="$ROOT/target/lattice-0.1.0-SNAPSHOT-all.jar"
+if [ ! -f "$JAR" ]; then
+  printf '%s\n' 'LATTICE CLI is not packaged yet. Run the GitHub verification workflow or build the project with Maven.' >&2
+  exit 2
+fi
+exec java -jar "$JAR" "$@"
