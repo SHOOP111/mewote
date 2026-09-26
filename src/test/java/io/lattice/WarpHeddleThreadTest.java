@@ -162,7 +162,7 @@ class WarpHeddleThreadTest {
 
     @Test void overnightScheduleAttributesAfterMidnightToThePreviousConfiguredDay() {
         String rules = rule("overnight", "game.deploy", "ALLOW", "EXPLICIT", "NETWORK",
-                ",\"guard\":{\"schedule\":{\"zone\":\"UTC\",\"days\":[\"MONDAY\"],\"start\":\"22:00\",\"end\":\"02:00\"}}}");
+                ",\"guard\":{\"schedule\":{\"zone\":\"UTC\",\"days\":[\"MONDAY\"],\"start\":\"22:00\",\"end\":\"02:00\"}}");
         DecisionEngine engine = new DecisionEngine(compile(NO_ROLES, rules).policy());
         assertEquals(Verdict.ALLOW, engine.evaluate(DecisionRequest.forSubject(SUBJECT, "game.deploy", Set.of(), EvaluationContext.empty(), Instant.parse("2026-01-13T01:30:00Z"))).verdict());
         assertEquals(Verdict.DENY, engine.evaluate(DecisionRequest.forSubject(SUBJECT, "game.deploy", Set.of(), EvaluationContext.empty(), Instant.parse("2026-01-13T02:00:00Z"))).verdict());
