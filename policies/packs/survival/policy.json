@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "name": "Survival SMP — safe starter",
+  "description": "A small, explicit baseline. Add named subject or role bindings before production use.",
+  "rules": [
+    {
+      "id": "survival.spawn.teleport",
+      "permission": "server.spawn.teleport",
+      "effect": "allow",
+      "authority": "default",
+      "priority": 10,
+      "guard": {},
+      "lifecycle": {"expires_at": "2099-01-01T00:00:00Z"}
+    },
+    {
+      "id": "survival.home.use",
+      "permission": "server.home.use",
+      "effect": "allow",
+      "authority": "default",
+      "priority": 10,
+      "guard": {},
+      "lifecycle": {"expires_at": "2099-01-01T00:00:00Z"}
+    },
+    {
+      "id": "survival.admin.denied-by-default",
+      "permission": "server.admin.**",
+      "effect": "deny",
+      "authority": "role",
+      "priority": 0,
+      "guard": {},
+      "lifecycle": {}
+    }
+  ]
+}
