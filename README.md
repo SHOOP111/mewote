@@ -2,7 +2,7 @@
 
 **LATTICE governs authority.** It is a Minecraft access-control platform designed around deterministic decisions, attributable reasons, and evidence that can be tested.
 
-> **Honest status:** this repository starts from an empty skeleton. It now contains a runnable Phase 0 Python vertical slice: Heddle's versioned JSON policy compiler/linter, Warp's deterministic decision kernel, Thread's three disclosure renderings, a survival starter pack, a CLI replay command, and GitHub Actions law tests. It is not yet a Minecraft plugin and does not yet implement the state ledger, leases/budgets, distributed mesh, identity provider, spatial index, visual console, or the later phases. Do not describe it as production-ready or as proving historical authority.
+> **Honest status:** this repository starts from an empty skeleton. It now contains a runnable Phase 0 Python vertical slice: Heddle's versioned JSON policy compiler/linter, Warp's deterministic decision kernel, Thread's three disclosure renderings, a survival starter pack, a CLI replay command, and GitHub Actions law tests. CI passed on commit `bc1a979` ([run 36246410362](https://github.com/SHOOP111/mewote/actions/runs/36246410362)). It is not yet a Minecraft plugin and does not yet implement the state ledger, leases/budgets, distributed mesh, identity provider, spatial index, visual console, or the later phases. Do not describe it as production-ready or as proving historical authority.
 
 ## Start in ten seconds
 

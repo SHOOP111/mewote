@@ -4,7 +4,7 @@ The requested complete platform spans multiple deployable systems. Work is seque
 
 | Phase | Target outcome | Acceptance gate | Status |
 |---|---|---|---|
-| 0 — vertical slice | Heddle compiler/lint, Warp deterministic resolver, Thread disclosure rendering, starter pack, CLI compatibility entry point | CI law/corpus suite green; package install; explicit supported semantics | Prototype implemented; CI run pending; no Minecraft adapter |
+| 0 — vertical slice | Heddle compiler/lint, Warp deterministic resolver, Thread disclosure rendering, starter pack, CLI compatibility entry point | CI law/corpus suite green; package install; explicit supported semantics | Prototype implemented; CI green on `bc1a979`; no Minecraft adapter |
 | 1 — memory | Skein event-sourced state ledger, checkpoints, reconstruction, export/restore | mutation/hash-chain tampering tests; checkpoint replay equivalence; deletion/crypto-shred review | Not started |
 | 2 — authority | Selvedge invariants/ceilings, Sigil tokens, Quanta budgets and atomic leases | property laws for ceilings, non-escalation, reserve/refund conservation, revocation | Not started |
 | 3 — reach | Weft HLC sync, Ply canonical identity, Tessellation immutable indexed spatial snapshots | partition/duplicate/skew/divergent-edit chaos; merge quarantine; declared propagation bound | Not started |

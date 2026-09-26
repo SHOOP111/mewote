@@ -1,6 +1,6 @@
 # Phase 0 design review: policy, resolution, evidence
 
-Status: **implemented prototype; CI evidence pending**. This document constrains the current implementation and identifies deliberately unsupported semantics. It is not a claim of production readiness.
+Status: **implemented prototype; CI green** on commit `bc1a979` (GitHub Actions run [36246410362](https://github.com/SHOOP111/mewote/actions/runs/36246410362)). This document constrains the current implementation and identifies deliberately unsupported semantics. It is not a claim of production readiness.
 
 ## Responsibilities and boundaries
 
