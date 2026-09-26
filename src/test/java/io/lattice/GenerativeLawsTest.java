@@ -1,11 +1,11 @@
 package io.lattice;
 
-import io.jqwik.api.Arbitrary;
-import io.jqwik.api.Arbitraries;
-import io.jqwik.api.Combinators;
-import io.jqwik.api.ForAll;
-import io.jqwik.api.Provide;
-import io.jqwik.api.Property;
+import net.jqwik.api.Arbitrary;
+import net.jqwik.api.Arbitraries;
+import net.jqwik.api.Combinators;
+import net.jqwik.api.ForAll;
+import net.jqwik.api.Provide;
+import net.jqwik.api.Property;
 import io.lattice.warp.Action;
 import io.lattice.warp.ActionPattern;
 import io.lattice.warp.DecisionEngine;
