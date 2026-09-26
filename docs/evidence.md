@@ -21,6 +21,6 @@ This mapping is intentionally conservative: a test demonstrates only the paths i
 | Signed links are scoped and expiring | HMAC tamper, viewer scope, subject, expiry tests | Link storage/authorization endpoint is not implemented. |
 | Replay reports behavioral differences | replay verdict-transition test | Real traffic recording and canary rollback are not implemented. |
 | Rogue plugin cannot self-register/expand registered writes | Bastion tests | No HTTP server or operational key lifecycle is implemented. |
-| Never claim unmeasured performance | workflow publishes coverage; no benchmark numbers in docs | JMH harness and server load tests are outstanding; no latency target is claimed as achieved. |
+| Never claim unmeasured performance | `BenchmarkHarnessTest`; GitHub workflow publishes `target/benchmark.json` with separate fast/context/spatial/audit measurements | This is a smoke harness on shared CI hardware, not JMH or a release benchmark; server load tests and target validation remain outstanding. |
 
 The test suite is an evidence pack in progress, not the requested release gate: mutation testing, 100% decision-point coverage, full real-world policy corpus, chaos/soak, signed external audit anchors, and a server adapter have not shipped.

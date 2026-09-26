@@ -32,6 +32,9 @@ jobs:
           result=$?
           cat verification.log
           exit "$result"
+      - name: Run reproducible smoke benchmarks
+        if: success()
+        run: java -jar target/lattice-0.1.0-SNAPSHOT-all.jar bench --output target/benchmark.json > target/benchmark.console.txt
       - name: Expose concise verification diagnostics
         if: failure()
         env:
@@ -57,5 +60,7 @@ jobs:
           path: |
             verification.log
             target/surefire-reports/**
+            target/benchmark.json
+            target/benchmark.console.txt
             target/site/jacoco/**
             target/site/surefire-report.html

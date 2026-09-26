@@ -50,6 +50,7 @@ public final class LatticeCli {
                 case "lint" -> lint(Arrays.copyOfRange(args, 1, args.length), out);
                 case "explain" -> explain(Arrays.copyOfRange(args, 1, args.length), out);
                 case "demo" -> demo(out);
+                case "bench" -> benchmark(Arrays.copyOfRange(args, 1, args.length), out);
                 default -> { err.println("Unknown command: " + args[0]); usage(err); yield 2; }
             };
         } catch (PolicyCompileException invalid) {
@@ -121,6 +122,22 @@ public final class LatticeCli {
         return decision.allowed() ? 0 : 3;
     }
 
+    private int benchmark(String[] args, PrintStream out) throws IOException {
+        String outputPath = option(args, "--output");
+        int operations = integerOption(args, "--operations", 10_000);
+        int samples = integerOption(args, "--samples", 12);
+        var report = new io.lattice.beacon.BenchmarkHarness(operations, samples).run();
+        String json = report.toJson();
+        if (outputPath != null) {
+            Path output = Path.of(outputPath);
+            if (output.getParent() != null) Files.createDirectories(output.getParent());
+            Files.writeString(output, json, StandardCharsets.UTF_8);
+            out.println("Benchmark evidence written to " + output.toAbsolutePath());
+        }
+        out.print(json);
+        return 0;
+    }
+
     private int demo(PrintStream out) throws IOException {
         try (InputStream input = LatticeCli.class.getResourceAsStream("/policies/survival.json")) {
             if (input == null) throw new IOException("Starter policy resource is missing from this build");
@@ -154,6 +171,13 @@ public final class LatticeCli {
         return null;
     }
 
+    private static int integerOption(String[] args, String option, int fallback) {
+        String value = option(args, option);
+        if (value == null) return fallback;
+        try { return Integer.parseInt(value); }
+        catch (NumberFormatException invalid) { throw new IllegalArgumentException(option + " must be an integer"); }
+    }
+
     private static Set<String> commaOption(String[] args, String option) {
         String value = option(args, option);
         if (value == null || value.isBlank()) return Set.of();
@@ -168,6 +192,7 @@ public final class LatticeCli {
         out.println("  lat lint [policy.json | --file policy.json]");
         out.println("  lat explain <policy.json> <subject-uuid> <action> [--role name] [--world id] [--region id]");
         out.println("  lat demo");
+        out.println("  lat bench [--output report.json] [--operations 10000] [--samples 12]");
         out.println("  lat version");
     }
 }

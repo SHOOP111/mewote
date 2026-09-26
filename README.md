@@ -19,7 +19,7 @@ The policy and CLI contract is documented in [`docs/policy-v1.md`](docs/policy-v
 - Budget authorization uses a single atomic reserve operation and returns a lease that can be committed or refunded.
 - The state-ledger, mesh, identity, spatial, token, replay, and observability packages are isolated prototypes; they are not yet durable, networked, or certified for production use.
 
-No benchmark number is published yet. The GitHub workflow records coverage, not a latency claim. No release claims 100% decision-point coverage until the generated report demonstrates it.
+The GitHub workflow publishes smoke measurements for pattern matching, guarded/budgeted decisions, spatial lookup, and record/journal work. These are noisy shared-runner observations, not release benchmarks or claims against the latency targets. No release claims 100% decision-point coverage until the generated report demonstrates it.
 
 ## Ten-second CLI
 
