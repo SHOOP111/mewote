@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static io.lattice.TestSupport.resource;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CliTest {
