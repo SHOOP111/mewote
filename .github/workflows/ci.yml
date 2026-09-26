@@ -27,16 +27,15 @@ jobs:
         id: verify
         shell: bash
         run: |
-          mkdir -p target
           set +e
-          mvn --batch-mode --no-transfer-progress clean verify > target/verification.log 2>&1
+          mvn --batch-mode --no-transfer-progress clean verify > verification.log 2>&1
           result=$?
-          cat target/verification.log
+          cat verification.log
           exit "$result"
       - name: Expose concise verification diagnostics
         if: failure()
         env:
-          LOG_PATH: target/verification.log
+          LOG_PATH: verification.log
         run: |
           python3 - <<'PY'
           import os
@@ -56,7 +55,7 @@ jobs:
           name: lattice-evidence-${{ github.sha }}
           if-no-files-found: warn
           path: |
-            target/verification.log
+            verification.log
             target/surefire-reports/**
             target/site/jacoco/**
             target/site/surefire-report.html
