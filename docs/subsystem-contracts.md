@@ -21,7 +21,7 @@ These contracts precede claims about completeness. Public methods are deliberate
 | **Bastion** | Admin-authorized plugin registration + key + action → attributed principal under mutation scopes and API budget. | Unregistered key, missing write scope, invalid rate, or unauthorized registration rejects. | Rogue registration, scope, authentication, and rate-limit tests. **No network middleware or key rotation service yet.** |
 | **Palette** | Versioned policy packs with tests and guided first-run. | Pack is copied, not applied; lint/review is required before live use. | Survival pack compile and CLI init/lint tests. Other packs are not shipped. |
 | **Shuttle** | Legacy entries → candidate diff plus semantic gaps; never writes active policy. | Mutable principal, unsupported node, wildcard mismatch, and unsupported context are review findings. | Review-only importer test. **Major-product importers/exporters are not complete.** |
-| **Bridge** | Stable identity + pre-captured context → compatibility verdict; bulk checks preserve per-request evidence. Observers are non-authoritative. | Request-template identity mismatch fails; observer extensions cannot grant. | Bulk and observer tests. **No Bukkit/Paper/Fabric/Velocity adapter or verified zero-allocation fast path yet.** |
+| **Bridge** | Stable identity + pre-captured context → compatibility verdict; bulk checks preserve per-request evidence. Observers are non-authoritative. | Request-template identity mismatch fails; observer extensions cannot grant. | Bulk and observer tests. **No Bukkit/Paper/Fabric/Velocity adapter, annotation processor, or verified zero-allocation fast path yet.** |
 
 ## Cross-cutting failure policy
 

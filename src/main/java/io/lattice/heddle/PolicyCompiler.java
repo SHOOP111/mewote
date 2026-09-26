@@ -72,6 +72,7 @@ public final class PolicyCompiler {
         }
 
         Map<String, Set<String>> overriddenBy = validateOverrides(source, byId, roleGraph);
+        validateInheritedCeilings(source, roleGraph);
         List<PolicyRule> ordered = new ArrayList<>(source.rules());
         ordered.sort(TOTAL_ORDER);
         List<CompiledRule> compiled = new ArrayList<>(ordered.size());
@@ -127,6 +128,21 @@ public final class PolicyCompiler {
         }
         if (rule.budget() != null && rule.effect() != RuleEffect.ALLOW) {
             throw failure("BUDGET_ON_NON_GRANT", pointer + "/budget", "Budgets attach to an allow reservation, not to a denial or barrier.");
+        }
+    }
+
+    private void validateInheritedCeilings(PolicySource source, RoleGraph roles) {
+        for (RoleDefinition descendant : source.roles().values()) {
+            Set<String> path = roles.inheritedBy(descendant.id());
+            for (PolicyRule grant : source.rules()) {
+                if (grant.effect() != RuleEffect.ALLOW || grant.role() == null || !path.contains(grant.role())) continue;
+                if (grant.role().equals(descendant.id()) || descendant.overrides().contains(grant.id())) continue;
+                if (!descendant.ceilingContains(grant.action())) {
+                    throw failure("INHERITED_CEILING_ESCAPE", "/roles/" + descendant.id() + "/ceiling",
+                            "Inherited grant '" + grant.id() + "' from role '" + grant.role()
+                                    + "' is outside this role's capability set. Narrow the inherited grant, widen this ceiling intentionally, or declare a valid explicit override.");
+                }
+            }
         }
     }
 

@@ -32,10 +32,7 @@ public final class Shuttle {
                 gaps.add(new Gap("MISSING_STABLE_PRINCIPAL", entry.permission(), "Legacy principal is missing; display names cannot be used as LATTICE subject identities."));
                 continue;
             }
-            if (!(principal.startsWith("group:") || principal.startsWith("role:")
-                    || principal.matches("java_uuid:[0-9a-fA-F-]{36}")
-                    || principal.matches("bedrock_xuid:[0-9]{1,32}")
-                    || principal.matches("service_account:[a-z0-9][a-z0-9._-]{0,127}"))) {
+            if (!isStablePrincipal(principal)) {
                 gaps.add(new Gap("MUTABLE_PRINCIPAL_REVIEW", principal, "Principal is not a declared role or canonical stable identity. Names cannot be used for authorization."));
                 continue;
             }
@@ -49,6 +46,17 @@ public final class Shuttle {
                     entry.context() == null ? "" : entry.context()));
         }
         return new MigrationPlan(sourceSystem, candidates, gaps);
+    }
+
+    private boolean isStablePrincipal(String principal) {
+        if (principal.matches("(?:group|role):[a-z0-9][a-z0-9._-]{0,127}")) return true;
+        if (principal.startsWith("java_uuid:")) {
+            try { return java.util.UUID.fromString(principal.substring("java_uuid:".length())).toString().equalsIgnoreCase(principal.substring("java_uuid:".length())); }
+            catch (IllegalArgumentException invalid) { return false; }
+        }
+        if (principal.startsWith("bedrock_xuid:")) return principal.substring("bedrock_xuid:".length()).matches("[0-9]{1,32}");
+        if (principal.startsWith("service_account:")) return principal.substring("service_account:".length()).matches("[a-z0-9][a-z0-9._-]{0,127}");
+        return false;
     }
 
     /** Stable machine-readable summary for a human approval step. */

@@ -38,6 +38,17 @@ public record EvaluationContext(
         return new EvaluationContext(null, null, null, null, null, Map.of());
     }
 
+    public Map<String, String> evidenceValues() {
+        TreeMap<String, String> values = new TreeMap<>();
+        if (world != null) values.put("world", world);
+        if (region != null) values.put("region", region);
+        if (healthState != null) values.put("healthState", healthState);
+        if (gameMode != null) values.put("gameMode", gameMode);
+        if (networkPersona != null) values.put("networkPersona", networkPersona);
+        pluginValues.forEach((key, value) -> values.put("plugin." + key, value));
+        return java.util.Collections.unmodifiableMap(values);
+    }
+
     public String value(String key) {
         return switch (key) {
             case "world" -> world;

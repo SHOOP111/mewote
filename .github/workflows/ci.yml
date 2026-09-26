@@ -16,22 +16,47 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
       - name: Compile and run the complete verification suite
-        run: mvn --batch-mode --no-transfer-progress clean verify
-      - name: Publish test and branch coverage evidence
+        id: verify
+        shell: bash
+        run: |
+          mkdir -p target
+          set +e
+          mvn --batch-mode --no-transfer-progress clean verify > target/verification.log 2>&1
+          result=$?
+          cat target/verification.log
+          exit "$result"
+      - name: Expose concise verification diagnostics
+        if: failure()
+        env:
+          LOG_PATH: target/verification.log
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          path = Path(os.environ["LOG_PATH"])
+          if not path.exists():
+              message = "Maven did not create its verification log."
+          else:
+              message = "\n".join(path.read_text(errors="replace").splitlines()[-35:])
+          message = message[:5000].replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A").replace("::", "%3A%3A")
+          print(f"::error title=GitHub verification diagnostics::{message}")
+          PY
+      - name: Publish test, branch coverage, and build logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lattice-evidence-${{ github.sha }}
           if-no-files-found: warn
           path: |
+            target/verification.log
             target/surefire-reports/**
             target/site/jacoco/**
             target/site/surefire-report.html

@@ -55,7 +55,7 @@ public final class DecisionEngine {
         for (AuthorityResolution outcome : outcomes) {
             for (TraceStep step : outcome.layer().trace()) {
                 if (step.outcome() == TraceStep.Outcome.SELECTED
-                        && (winner == null || outcome.layer().winner() != winner.layer().winner())) {
+                        && (winner == null || outcome.layer().winner().rank() != winner.layer().winner().rank())) {
                     evidence.add(new TraceStep(step.ruleId(), step.band(), step.authority(), step.effect(),
                             TraceStep.Outcome.LOWER_PRECEDENCE, "another authority had an earlier compiled rank"));
                 } else {
@@ -103,7 +103,8 @@ public final class DecisionEngine {
                               String ruleId, boolean barrier, Duration retryAfter, List<TraceStep> trace,
                               io.lattice.quanta.BudgetLease lease) {
         ReasoningRecord record = new ReasoningRecord(policy.policyHash(), request.subject().toString(),
-                request.action().value(), verdict, reason, band, ruleId, barrier, trace);
+                request.action().value(), request.at(), request.context().evidenceValues(), verdict, reason,
+                band, ruleId, barrier, trace);
         return new Decision(verdict, reason, band, ruleId, barrier, retryAfter, record, lease);
     }
 
