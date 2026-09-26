@@ -133,10 +133,10 @@ class WarpHeddleThreadTest {
         assertThrows(PolicyCompileException.class, () -> compile(cycle, ""));
         String tooWide = "{\"r\":{\"inherits\":[],\"ceiling\":[\"game.chat.*\"]}}";
         assertThrows(PolicyCompileException.class, () -> compile(tooWide,
-                rule("bad", "game.**", "ALLOW", "EXPLICIT", "ROLE", ",\"role\":\"r\")));
+                rule("bad", "game.**", "ALLOW", "EXPLICIT", "ROLE", ",\"role\":\"r\"")));
         String inheritedEscapeRoles = "{\"parent\":{\"inherits\":[],\"ceiling\":[\"game.**\"]},\"child\":{\"inherits\":[\"parent\"],\"ceiling\":[\"game.chat.**\"]}}";
         assertThrows(PolicyCompileException.class, () -> compile(inheritedEscapeRoles,
-                rule("parent-admin", "game.admin.**", "ALLOW", "EXPLICIT", "ROLE", ",\"role\":\"parent\")));
+                rule("parent-admin", "game.admin.**", "ALLOW", "EXPLICIT", "ROLE", ",\"role\":\"parent\"")));
         String unknown = "{\"schemaVersion\":1,\"meta\":{\"id\":\"x\",\"version\":\"1\",\"description\":\"x\"},\"roles\":{},\"rules\":[],\"silentlyIgnored\":true}";
         var error = assertThrows(PolicyCompileException.class, () -> new PolicyCompiler().compile(unknown));
         assertEquals("UNKNOWN_FIELD", error.diagnostics().getFirst().code());
