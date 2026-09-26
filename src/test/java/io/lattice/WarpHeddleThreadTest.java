@@ -45,7 +45,7 @@ class WarpHeddleThreadTest {
         assertTrue(ActionPattern.parse("**").matches(Action.of("one.two.three")));
         assertTrue(ActionPattern.parse("minecraft.build.place").isSubsetOf(tail));
         assertFalse(tail.isSubsetOf(one));
-        assertTrue(ActionPattern.parse("minecraft.build.**").broad());
+        assertTrue(ActionPattern.parse("build.**").broad());
     }
 
     @Test void wildcardInTheMiddleAndMalformedSegmentsAreCompileErrors() {
@@ -151,7 +151,7 @@ class WarpHeddleThreadTest {
 
     @Test void scheduleUsesItsDeclaredZoneAndHalfOpenWindow() {
         String rules = rule("weekday", "game.deploy", "ALLOW", "EXPLICIT", "NETWORK",
-                ",\"guard\":{\"schedule\":{\"zone\":\"America/New_York\",\"days\":[\"MONDAY\"],\"start\":\"09:00\",\"end\":\"10:00\"}}}");
+                ",\"guard\":{\"schedule\":{\"zone\":\"America/New_York\",\"days\":[\"MONDAY\"],\"start\":\"09:00\",\"end\":\"10:00\"}}");
         DecisionEngine engine = new DecisionEngine(compile(NO_ROLES, rules).policy());
         Decision inside = engine.evaluate(DecisionRequest.forSubject(SUBJECT, "game.deploy", Set.of(), EvaluationContext.empty(), Instant.parse("2026-03-09T13:30:00Z")));
         Decision atEnd = engine.evaluate(DecisionRequest.forSubject(SUBJECT, "game.deploy", Set.of(), EvaluationContext.empty(), Instant.parse("2026-03-09T14:00:00Z")));

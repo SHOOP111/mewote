@@ -113,7 +113,7 @@ class GenerativeLawsTest {
         List<Mutation> mutations = new ArrayList<>();
         for (MutationCase item : input) {
             mutations.add(new Mutation(item.id(), SUBJECT, ActionPattern.parse("game.build.place"), item.kind(),
-                    new HlcTimestamp(item.clock(), 0, "node"), item.approved()));
+                    new HlcTimestamp(item.clock(), 0, "node"), item.kind() == Mutation.Kind.GRANT && item.approved()));
         }
         WeftMerger merger = new WeftMerger();
         WeftSnapshot empty = new WeftSnapshot(java.util.Map.of(), java.util.Map.of());

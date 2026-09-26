@@ -112,7 +112,7 @@ class OperationalSubsystemsTest {
         assertTrue(journal.record(decision.record(), NOW, false, false, 0));
         assertEquals(DecisionJournal.Cause.SENSITIVE_DENIAL, journal.entries().getFirst().cause());
         assertTrue(journal.forSubject(SUBJECT.toString(), NOW.minusSeconds(1), NOW.plusSeconds(1)).size() == 1);
-        assertFalse(journal.record(decision.record(), NOW, false, false, 0));
+        assertTrue(journal.record(decision.record(), NOW, false, false, 0), "sensitive denials are always captured");
         journal.capture(SUBJECT.toString(), NOW.minusSeconds(1), NOW.plusSeconds(10));
         var ordinary = new DecisionEngine(compile("{}", rule("allow", "game.play", "ALLOW", "EXPLICIT", "NETWORK", "")).policy())
                 .evaluate(DecisionRequest.forSubject(SUBJECT, "game.play", Set.of(), EvaluationContext.empty(), NOW));

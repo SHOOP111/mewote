@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 
 /** Bounded-label counters and fixed-bucket latency histograms. */
@@ -17,7 +18,7 @@ public final class MetricRegistry {
     private final ConcurrentMap<String, LongAdder> counters = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Histogram> histograms = new ConcurrentHashMap<>();
     private final int maximumSeries;
-    private final java.util.concurrent.atomic.AtomicInteger seriesCount = new java.util.concurrent.atomic.AtomicInteger();
+    private final AtomicInteger seriesCount = new AtomicInteger();
 
     public MetricRegistry(int maximumSeries) {
         if (maximumSeries < 1) throw new IllegalArgumentException("maximumSeries must be positive");
@@ -31,6 +32,7 @@ public final class MetricRegistry {
     }
     public void observeNanos(String name, long nanos) {
         if (nanos < 0) throw new IllegalArgumentException("latency cannot be negative");
+        if (name == null || !validName(name)) throw new IllegalArgumentException("Invalid metric name");
         histograms.computeIfAbsent(name, ignored -> {
             reserveSeries();
             return new Histogram();
@@ -49,11 +51,15 @@ public final class MetricRegistry {
     }
 
     private LongAdder counter(String name) {
-        if (name == null || !name.matches("[a-zA-Z_:][a-zA-Z0-9_:]{0,127}")) throw new IllegalArgumentException("Invalid metric name");
+        if (!validName(name)) throw new IllegalArgumentException("Invalid metric name");
         return counters.computeIfAbsent(name, ignored -> {
             reserveSeries();
             return new LongAdder();
         });
+    }
+
+    private static boolean validName(String name) {
+        return name != null && name.matches("[a-zA-Z_:][a-zA-Z0-9_:.-]{0,127}");
     }
 
     private void reserveSeries() {
